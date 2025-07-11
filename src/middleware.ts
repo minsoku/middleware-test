@@ -14,7 +14,7 @@ declare global {
 	var holidayCache: HolidayCache | undefined;
 }
 
-const CACHE_DURATION = 2 * 60 * 1000; // 5분 (테스트용으로 짧게 설정)
+const CACHE_DURATION = 1 * 60 * 1000; // 1분 (테스트용으로 짧게 설정)
 const currentYear = new Date().getFullYear();
 
 async function fetchHolidayData() {
