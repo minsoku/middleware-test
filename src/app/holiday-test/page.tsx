@@ -92,6 +92,12 @@ export default async function NotionTest() {
 				<p>
 					<strong>업데이트 시간대:</strong> {cacheInfo?.allowedHours?.join(', ')}시
 				</p>
+				<p>
+					<strong>API 호출 상태:</strong> {cacheInfo?.isApiCalling ? '🔄 호출 중' : '✅ 대기 중'}
+				</p>
+				<p>
+					<strong>업데이트 모드:</strong> {cacheInfo?.isEmergencyEligible ? '🚨 긴급 업데이트 가능' : '🕐 정기 업데이트만'}
+				</p>
 				{notionData?.cachedAt && (
 					<p>
 						<strong>데이터 생성 시간:</strong>{' '}
@@ -197,30 +203,6 @@ export default async function NotionTest() {
 					</p>
 				</div>
 			)}
-
-			{/* 테스트 안내 */}
-			<div
-				style={{
-					marginTop: '30px',
-					padding: '15px',
-					backgroundColor: '#e7f3ff',
-					borderRadius: '8px',
-				}}
-			>
-				<h3>🧪 테스트 방법</h3>
-				<ol>
-					<li>이 페이지를 여러 번 새로고침 해보세요</li>
-					<li>다른 브라우저/시크릿 모드에서도 접속해보세요</li>
-					<li>10, 12, 14, 16, 18, 20시에만 API 호출 횟수가 증가하는지 확인하세요</li>
-					<li>다른 시간대에는 캐시된 데이터를 사용하는지 확인하세요</li>
-				</ol>
-				<p>
-					<strong>예상 결과:</strong> 지정된 시간대가 아니면 API 호출 없이 캐시된 데이터를 사용해야 합니다.
-				</p>
-				<p>
-					<strong>💰 API 절약 효과:</strong> 하루에 최대 6번만 호출하여 1000회 제한으로 약 5개월 사용 가능!
-				</p>
-			</div>
 		</div>
 	);
 }
