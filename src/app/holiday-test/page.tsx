@@ -46,7 +46,7 @@ export default async function NotionTest() {
 
 	return (
 		<div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-			<h1>📊 Notion API 캐싱 테스트</h1>
+			<h1>📢 공지사항 (Notion API 스마트 캐싱)</h1>
 
 			{/* 캐시 상태 정보 */}
 			<div
@@ -77,8 +77,20 @@ export default async function NotionTest() {
 				<p>
 					<strong>캐시 경과 시간:</strong>
 					{cacheInfo?.cacheAge
-						? `${Math.round(cacheInfo.cacheAge / 1000)}초`
+						? `${Math.round(cacheInfo.cacheAge / 1000)}초 (${cacheInfo.cacheHours || 0}시간)`
 						: '없음'}
+				</p>
+				<p>
+					<strong>현재 시간:</strong> {cacheInfo?.currentHour || 0}시
+				</p>
+				<p>
+					<strong>마지막 업데이트:</strong> {cacheInfo?.lastUpdateHour >= 0 ? `${cacheInfo.lastUpdateHour}시` : '없음'}
+				</p>
+				<p>
+					<strong>다음 업데이트:</strong> {cacheInfo?.nextUpdateDay === 'tomorrow' ? '내일' : '오늘'} {cacheInfo?.nextUpdateHour}시
+				</p>
+				<p>
+					<strong>업데이트 시간대:</strong> {cacheInfo?.allowedHours?.join(', ')}시
 				</p>
 				{notionData?.cachedAt && (
 					<p>
@@ -110,7 +122,7 @@ export default async function NotionTest() {
 
 			{/* Notion 데이터 */}
 			<div>
-				<h2>🗃️ Notion 데이터베이스 항목</h2>
+				<h2>📄 공지사항 목록</h2>
 				{items.length > 0 ? (
 					<>
 						<p>
@@ -199,12 +211,14 @@ export default async function NotionTest() {
 				<ol>
 					<li>이 페이지를 여러 번 새로고침 해보세요</li>
 					<li>다른 브라우저/시크릿 모드에서도 접속해보세요</li>
-					<li>API 호출 횟수가 증가하는지 확인하세요</li>
-					<li>2시간 후에 다시 접속해서 캐시가 갱신되는지 확인하세요</li>
+					<li>10, 12, 14, 16, 18, 20시에만 API 호출 횟수가 증가하는지 확인하세요</li>
+					<li>다른 시간대에는 캐시된 데이터를 사용하는지 확인하세요</li>
 				</ol>
 				<p>
-					<strong>예상 결과:</strong> 캐시가 유효한 동안은 여러 명이 접속해도
-					API 호출 횟수가 증가하지 않아야 합니다.
+					<strong>예상 결과:</strong> 지정된 시간대가 아니면 API 호출 없이 캐시된 데이터를 사용해야 합니다.
+				</p>
+				<p>
+					<strong>💰 API 절약 효과:</strong> 하루에 최대 6번만 호출하여 1000회 제한으로 약 5개월 사용 가능!
 				</p>
 			</div>
 		</div>
