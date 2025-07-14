@@ -20,11 +20,29 @@ declare global {
 	var apiCallPromise: Promise<any> | undefined;
 }
 
-// 🕐 API 호출 허용 시간 (24시간 형식)
+// 🕐 API 호출 허용 시간 (KST 기준)
 const ALLOWED_HOURS = [10, 12, 14, 16, 18, 20];
 
 // 🚨 긴급 업데이트 조건 (6시간 이상 오래된 데이터)
 const EMERGENCY_UPDATE_THRESHOLD = 6 * 60 * 60 * 1000; // 6시간
+
+// 🇰🇷 KST(한국 표준시) 기준 현재 시간 가져오기
+function getKSTTime() {
+	const now = new Date();
+	// UTC 시간에 9시간 추가하여 KST로 변환
+	const kstTime = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+	return kstTime;
+}
+
+// 🇰🇷 KST 기준 현재 시간(시) 가져오기
+function getKSTHour() {
+	return getKSTTime().getHours();
+}
+
+// 🇰🇷 KST 기준 시간 문자열 가져오기
+function getKSTString() {
+	return getKSTTime().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+}
 
 function getNextAllowedHour(currentHour: number): number {
 	// 현재 시간 이후의 다음 허용 시간 찾기
@@ -68,7 +86,7 @@ async function fetchNotionData(currentHour: number) {
 	const apiPromise = (async () => {
 		try {
 			console.log(
-				`🔄 Notion API 호출 시작: ${new Date().toLocaleString('ko-KR')} (${currentHour}시 정기 업데이트)`,
+				`🔄 Notion API 호출 시작: ${getKSTString()} (${currentHour}시 정기 업데이트)`,
 			);
 
 			const client = new Client({
@@ -101,10 +119,10 @@ async function fetchNotionData(currentHour: number) {
 			const isNextDay = nextHour <= currentHour;
 
 			console.log(
-				`✅ Notion API 호출 완료: ${new Date().toLocaleString('ko-KR')}`,
+				`✅ Notion API 호출 완료: ${getKSTString()}`,
 			);
 			console.log(`📊 총 API 호출 횟수: ${global.notionCache.apiCallCount}`);
-			console.log(`⏰ 다음 업데이트 시간: ${isNextDay ? '내일' : '오늘'} ${nextHour}시`);
+			console.log(`⏰ 다음 업데이트 시간: ${isNextDay ? '내일' : '오늘'} ${nextHour}시 (KST)`);
 
 			return response;
 		} catch (error) {
@@ -127,7 +145,7 @@ export async function middleware(request: NextRequest) {
 	// 테스트 페이지 접근 시에만 동작
 	if (request.nextUrl.pathname.startsWith('/holiday-test')) {
 		const now = Date.now();
-		const currentHour = new Date().getHours();
+		const currentHour = getKSTHour(); // KST 기준 시간 사용
 
 		// 캐시 초기화
 		if (!global.notionCache) {
@@ -151,7 +169,7 @@ export async function middleware(request: NextRequest) {
 			const isEmergency = !hasCache || cacheAge > EMERGENCY_UPDATE_THRESHOLD;
 			const updateReason = isEmergency ? '긴급 업데이트' : `${currentHour}시 정기 업데이트`;
 			
-			console.log(`🔍 ${updateReason} - 새로운 데이터 로드`);
+			console.log(`🔍 ${updateReason} - 새로운 데이터 로드 (KST 기준)`);
 			try {
 				await fetchNotionData(currentHour);
 			} catch (error) {
@@ -160,7 +178,7 @@ export async function middleware(request: NextRequest) {
 		} else {
 			const nextHour = getNextAllowedHour(currentHour);
 			const isNextDay = nextHour <= currentHour;
-			console.log(`💾 캐시된 데이터 사용 (다음 업데이트: ${isNextDay ? '내일' : '오늘'} ${nextHour}시)`);
+			console.log(`💾 캐시된 데이터 사용 (다음 업데이트: ${isNextDay ? '내일' : '오늘'} ${nextHour}시 KST)`);
 		}
 
 		// 응답 헤더 설정
@@ -192,6 +210,7 @@ export async function middleware(request: NextRequest) {
 			allowedHours: ALLOWED_HOURS,
 			isApiCalling: !!global.isApiCalling,
 			isEmergencyEligible, // 긴급 업데이트 가능한지 표시
+			timezone: 'KST', // 시간대 정보 추가
 		};
 
 		response.headers.set('X-Cache-Info', JSON.stringify(cacheInfo));

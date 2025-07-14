@@ -41,7 +41,7 @@ export default async function NotionTest() {
 		}
 	}
 
-	const currentTime = new Date().toLocaleString('ko-KR');
+	const currentTime = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
 	const items = notionData?.results || [];
 
 	return (
@@ -59,7 +59,7 @@ export default async function NotionTest() {
 			>
 				<h2>📊 캐시 상태</h2>
 				<p>
-					<strong>현재 시간:</strong> {currentTime}
+					<strong>현재 시간:</strong> {currentTime} (KST)
 				</p>
 				<p>
 					<strong>캐시 존재:</strong>{' '}
@@ -71,7 +71,7 @@ export default async function NotionTest() {
 				<p>
 					<strong>캐시 생성 시간:</strong>
 					{cacheInfo?.timestamp
-						? new Date(cacheInfo.timestamp).toLocaleString('ko-KR')
+						? new Date(cacheInfo.timestamp).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
 						: '없음'}
 				</p>
 				<p>
@@ -81,7 +81,7 @@ export default async function NotionTest() {
 						: '없음'}
 				</p>
 				<p>
-					<strong>현재 시간:</strong> {cacheInfo?.currentHour || 0}시
+					<strong>현재 시간:</strong> {cacheInfo?.currentHour || 0}시 ({cacheInfo?.timezone || 'UTC'})
 				</p>
 				<p>
 					<strong>마지막 업데이트:</strong> {cacheInfo?.lastUpdateHour >= 0 ? `${cacheInfo.lastUpdateHour}시` : '없음'}
@@ -90,7 +90,7 @@ export default async function NotionTest() {
 					<strong>다음 업데이트:</strong> {cacheInfo?.nextUpdateDay === 'tomorrow' ? '내일' : '오늘'} {cacheInfo?.nextUpdateHour}시
 				</p>
 				<p>
-					<strong>업데이트 시간대:</strong> {cacheInfo?.allowedHours?.join(', ')}시
+					<strong>업데이트 시간대:</strong> {cacheInfo?.allowedHours?.join(', ')}시 ({cacheInfo?.timezone || 'UTC'})
 				</p>
 				<p>
 					<strong>API 호출 상태:</strong> {cacheInfo?.isApiCalling ? '🔄 호출 중' : '✅ 대기 중'}
@@ -101,7 +101,7 @@ export default async function NotionTest() {
 				{notionData?.cachedAt && (
 					<p>
 						<strong>데이터 생성 시간:</strong>{' '}
-						{new Date(notionData.cachedAt).toLocaleString('ko-KR')}
+						{new Date(notionData.cachedAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}
 					</p>
 				)}
 			</div>
@@ -152,11 +152,11 @@ export default async function NotionTest() {
 									</div>
 									<div style={{ fontSize: '12px', color: '#666' }}>
 										<strong>생성 시간:</strong>{' '}
-										{new Date(item.created_time).toLocaleString('ko-KR')}
+										{new Date(item.created_time).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}
 									</div>
 									<div style={{ fontSize: '12px', color: '#666' }}>
 										<strong>수정 시간:</strong>{' '}
-										{new Date(item.last_edited_time).toLocaleString('ko-KR')}
+										{new Date(item.last_edited_time).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}
 									</div>
 									{/* 프로퍼티 정보 */}
 									<div
