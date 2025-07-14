@@ -46,7 +46,7 @@ export default async function NotionTest() {
 
 	return (
 		<div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-			<h1>📢 공지사항 (Notion API 스마트 캐싱)</h1>
+			<h1>📢 공지사항 캐싱 테스트</h1>
 
 			{/* 캐시 상태 정보 */}
 			<div
@@ -126,9 +126,8 @@ export default async function NotionTest() {
 				</a>
 			</div>
 
-			{/* Notion 데이터 */}
 			<div>
-				<h2>📄 공지사항 목록</h2>
+				<h2>📄 캐시 목록</h2>
 				{items.length > 0 ? (
 					<>
 						<p>
